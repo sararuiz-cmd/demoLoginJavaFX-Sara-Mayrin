@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="ni.edu.uam.demologin.controller.VistaUsuariosController"
+            prefWidth="600" prefHeight="400">
+
+    <VBox spacing="10" alignment="CENTER"
+          AnchorPane.topAnchor="10"
+          AnchorPane.leftAnchor="10"
+          AnchorPane.rightAnchor="10"
+          AnchorPane.bottomAnchor="10">
+
+        <Label text="Usuarios Registrados"
+               style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+
+        <TableView fx:id="tablaUsuarios" prefHeight="300" prefWidth="580">
+            <columns>
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150"/>
+                <TableColumn fx:id="colApellido" text="Apellido" prefWidth="150"/>
+                <TableColumn fx:id="colCorreo" text="Correo" prefWidth="200"/>
+                <TableColumn fx:id="colAcciones" text="Acciones" prefWidth="80"/>
+            </columns>
+        </TableView>
+
+    </VBox>
+</AnchorPane>
+
