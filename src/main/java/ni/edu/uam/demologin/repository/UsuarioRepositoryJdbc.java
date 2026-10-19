@@ -44,6 +44,7 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository{
                         rs.getString("usuario"),
                         rs.getString("ruta_foto")
                 );
+                usuario.setId(rs.getObject("id", UUID.class));
                 usuarios.add(usuario);
             }
             return usuarios;
@@ -64,10 +65,10 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository{
                      ",correo" +
                      ",password " +
                      "from usuario " +
-                     " where id = ?1";
+                     " where id = ?";
         try(Connection con= connection.getConnection();
             PreparedStatement ps = con.prepareStatement(sql)){
-            ps.setString(1,id);
+            ps.setObject(1,UUID.fromString(id));
             try(ResultSet rs = ps.executeQuery()){
                 if (rs.next()) {
                     Usuario usuario = new Usuario(
@@ -78,6 +79,7 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository{
                             rs.getString("usuario"),
                             rs.getString("ruta_foto")
                     );
+                    usuario.setId(rs.getObject("id", UUID.class));
                     return Optional.of(usuario);
                 }
             }
@@ -99,7 +101,7 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository{
         try(Connection con= connection.getConnection();
             PreparedStatement ps = con.prepareStatement(sql))
         {
-            ps.setObject(1, UUID.randomUUID());
+            ps.setObject(1, usuario.getId());
             ps.setString(2,usuario.getNombre());
             ps.setString(3,usuario.getApellido());
             ps.setString(4,usuario.getUsuario());
@@ -107,6 +109,45 @@ public class UsuarioRepositoryJdbc implements UsuarioRepository{
             ps.setString(6,usuario.getCorreo());
             ps.setString(7,usuario.getRutafoto());
             ps.executeUpdate();
+        }
+    }
+
+    @Override
+    public void update(Usuario usuario) throws Exception {
+        String sql = "UPDATE usuario SET " +
+                     "primer_nombre = ?," +
+                     "primer_apellido = ?," +
+                     "usuario = ?," +
+                     "password = ?," +
+                     "correo = ?," +
+                     "ruta_foto = ? " +
+                     "WHERE id = ?";
+        try(Connection con= connection.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql))
+        {
+            ps.setString(1,usuario.getNombre());
+            ps.setString(2,usuario.getApellido());
+            ps.setString(3,usuario.getUsuario());
+            ps.setString(4,usuario.getPassword());
+            ps.setString(5,usuario.getCorreo());
+            ps.setString(6,usuario.getRutafoto());
+            ps.setObject(7,usuario.getId());
+            if (ps.executeUpdate() == 0) {
+                throw new Exception("No se encontró el usuario a actualizar");
+            }
+        }
+    }
+
+    @Override
+    public void delete(UUID id) throws Exception {
+        String sql = "DELETE FROM usuario WHERE id = ?";
+        try(Connection con= connection.getConnection();
+            PreparedStatement ps = con.prepareStatement(sql))
+        {
+            ps.setObject(1,id);
+            if (ps.executeUpdate() == 0) {
+                throw new Exception("No se encontró el usuario a eliminar");
+            }
         }
     }
 

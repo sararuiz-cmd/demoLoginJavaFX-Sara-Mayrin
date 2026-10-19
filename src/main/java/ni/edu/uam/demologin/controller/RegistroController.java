@@ -16,6 +16,7 @@ import ni.edu.uam.demologin.Main;
 import ni.edu.uam.demologin.model.Usuario;
 import ni.edu.uam.demologin.service.ArchivoService;
 import ni.edu.uam.demologin.service.NavegationService;
+import ni.edu.uam.demologin.service.UsuarioService;
 
 import javax.swing.*;
 import java.io.File;
@@ -43,12 +44,14 @@ public class RegistroController {
              archivoService = new ArchivoService();
     private final NavegationService
             navegationService = new NavegationService();
+    private final UsuarioService
+            usuarioService = new UsuarioService();
 
     @FXML
     private void seleccionarFoto(ActionEvent event)
     {
         File archivo = seleccionarArchivo();
-        if (archivo != null) {
+        if (archivo == null) {
             return;
         }
         try {
@@ -88,21 +91,38 @@ public class RegistroController {
         if (!validarFormulario()) {
             return;
         }
+        //Orden del constructor: nombre, apellido, correo, password, usuario, rutafoto
         Usuario usuario = new Usuario(
-                txtNombre.getText(),
-                txtApellido.getText(),
-                txtCorreo.getText(),
-                txtUsuario.getText(),
+                txtNombre.getText().trim(),
+                txtApellido.getText().trim(),
+                txtCorreo.getText().trim(),
                 txtPassword.getText(),
+                txtUsuario.getText().trim(),
                 rutaFoto
         );
+        try {
+            usuarioService.save(usuario);
+        } catch (Exception e) {
+            UtilController.mostrarMensaje(
+                    Alert.AlertType.ERROR,
+                    "Error",
+                    "No se pudo registrar el usuario: " + e.getMessage()
+            );
+            return;
+        }
+        UtilController.mostrarMensaje(
+                Alert.AlertType.INFORMATION,
+                "Éxito",
+                "Usuario registrado correctamente"
+        );
         mostrarUsuario(usuario);
+        regresar(event);
     }
 
     private void mostrarUsuario(Usuario usuario) {
         try {
             FXMLLoader loader = new FXMLLoader(
-                    Main.class.getResource("fxml/usuario-modal.fxml")
+                    Main.class.getResource("usuario-modal.fxml")
             );
             Parent root = loader.load();
             UsuarioModalController controller =

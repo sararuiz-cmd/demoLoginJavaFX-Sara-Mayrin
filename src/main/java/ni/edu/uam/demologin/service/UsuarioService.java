@@ -8,6 +8,7 @@ import ni.edu.uam.demologin.repository.UsuarioRepositoryJdbc;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
@@ -26,6 +27,12 @@ public class UsuarioService {
     }
     public void save(Usuario usuario) throws Exception{
         usuarioRepository.save(usuario);
+    }
+    public void update(Usuario usuario) throws Exception{
+        usuarioRepository.update(usuario);
+    }
+    public void delete(UUID id) throws Exception{
+        usuarioRepository.delete(id);
     }
 
     public Optional<Usuario> findByLogin(String usuario, String password) throws Exception {

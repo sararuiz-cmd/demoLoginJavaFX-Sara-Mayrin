@@ -27,7 +27,7 @@ public class LoginController {
     }
 
     @FXML
-    private void iniciarSesion(ActionEvent actionEvent) throws Exception {
+    private void iniciarSesion(ActionEvent actionEvent) {
         String usuario = txtUsuario.getText();
         String password = txtPassword.getText();
         if (usuario.isBlank() || password.isBlank()) {
@@ -38,14 +38,27 @@ public class LoginController {
             );
         }
         else {
-            Usuario u = service.findByLogin(usuario,password)
-                    .orElse(null);
-            if (u != null) {
-                UtilController.mostrarMensaje(
-                        Alert.AlertType.INFORMATION,
-                        "Bienvenido",
-                        "Inicio de sesion correcto"
-                );
+            try {
+                Usuario u = service.findByLogin(usuario,password)
+                        .orElse(null);
+                if (u != null) {
+                    UtilController.mostrarMensaje(
+                            Alert.AlertType.INFORMATION,
+                            "Bienvenido",
+                            "Inicio de sesion correcto"
+                    );
+                    navegationService.cambiarVista("Vista-Usuarios.fxml",txtUsuario);
+                }
+                else {
+                    UtilController.mostrarMensaje(
+                            Alert.AlertType.ERROR,
+                            "Error",
+                            "Usuario o contraseña incorrectos"
+                    );
+                }
+            }
+            catch (Exception e) {
+                UtilController.mostrarException(e);
             }
         }
     }
